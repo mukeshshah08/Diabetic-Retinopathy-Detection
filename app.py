@@ -4,9 +4,12 @@ import tensorflow as tf
 from PIL import Image
 import matplotlib.pyplot as plt
 
+import os
+
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("dr_model_final.keras")
+    model_path = os.path.join(os.path.dirname(__file__), "dr_model_final.keras")
+    return tf.keras.models.load_model(model_path)
 
 model = load_model()
 
