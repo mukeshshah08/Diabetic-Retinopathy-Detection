@@ -60,10 +60,10 @@ This project aims to:
 ## 📂 Project Structure
 Diabetic-Retinopathy-Detection/
 │
-├── app.py
-├── requirements.txt
-├── README.md
-└── (model downloaded at runtime from Google Drive)
+├── app.py # Streamlit application
+├── requirements.txt # Python dependencies
+├── README.md # Project documentation
+└── runtime.txt # Python version configuration
 
 
 ---
