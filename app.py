@@ -2,21 +2,45 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-import matplotlib.pyplot as plt
 
-import os
-
+# -----------------------------
+# Rebuild Model Architecture
+# -----------------------------
 @st.cache_resource
 def load_model():
-    model_path = os.path.join(os.path.dirname(__file__), "dr_model_final.keras")
-    return tf.keras.models.load_model(model_path)
+
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=(224, 224, 3),
+        include_top=False,
+        weights="imagenet"
+    )
+
+    base_model.trainable = False
+
+    model = tf.keras.Sequential([
+        tf.keras.layers.Rescaling(1./255),
+        base_model,
+        tf.keras.layers.GlobalAveragePooling2D(),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(5, activation="softmax")
+    ])
+
+    model.load_weights("phase1_weights.weights.h5")
+
+    return model
+
 
 model = load_model()
 
 class_names = ["Mild", "Moderate", "No_DR", "Proliferate_DR", "Severe"]
 
-st.title("Diabetic Retinopathy Detection System")
-st.write("Upload a retinal image to predict the DR stage.")
+# -----------------------------
+# Streamlit UI
+# -----------------------------
+st.title("Diabetic Retinopathy Detection")
+st.write("Upload a retinal image to predict DR stage.")
 
 uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
 
@@ -26,19 +50,11 @@ if uploaded_file is not None:
 
     img = image.resize((224, 224))
     img_array = np.array(img)
-    img_array = tf.keras.applications.efficientnet.preprocess_input(img_array)
     img_array = np.expand_dims(img_array, axis=0)
 
-    predictions = model.predict(img_array)
-    predicted_class = np.argmax(predictions)
-    confidence = np.max(predictions)
+    prediction = model.predict(img_array)
+    predicted_class = np.argmax(prediction)
+    confidence = np.max(prediction)
 
-    st.subheader("Prediction Result")
-    st.write(f"**Predicted Class:** {class_names[predicted_class]}")
-    st.write(f"**Confidence:** {confidence:.2f}")
-
-    st.subheader("Class Probabilities")
-    fig, ax = plt.subplots()
-    ax.bar(class_names, predictions[0])
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
+    st.success(f"Prediction: {class_names[predicted_class]}")
+    st.write(f"Confidence: {confidence:.2f}")
