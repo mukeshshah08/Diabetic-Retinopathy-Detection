@@ -1,6 +1,4 @@
 import os
-os.environ["KERAS_BACKEND"] = "tensorflow"
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import streamlit as st
 import numpy as np
 import tensorflow as tf
