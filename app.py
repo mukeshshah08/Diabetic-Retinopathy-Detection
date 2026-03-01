@@ -12,9 +12,10 @@ FILE_ID = "1ff9RWXpabyTPGC5F7AMj3qakCgH_dICF"
 def load_model():
     if not os.path.exists(MODEL_PATH):
         url = f"https://drive.google.com/uc?id={FILE_ID}"
-        gdown.download(url, MODEL_PATH, quiet=False)
-    return tf.keras.models.load_model(MODEL_PATH)
+        gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True)
 
+    return tf.keras.models.load_model(MODEL_PATH, compile=False)
+    
 model = load_model()
 
 class_names = ["Mild", "Moderate", "No_DR", "Proliferate_DR", "Severe"]
