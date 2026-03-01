@@ -1,35 +1,17 @@
-import streamlit as st
-import numpy as np
 import tensorflow as tf
-from PIL import Image
+import streamlit as st
+import gdown
+import os
 
-# -----------------------------
-# Rebuild Model Architecture
-# -----------------------------
+MODEL_PATH = "retinopathy_model.keras"
+FILE_ID = "1ff9RWXpabyTPGC5F7AMj3qakCgH_dICF"
+
 @st.cache_resource
 def load_model():
-
-    base_model = tf.keras.applications.MobileNetV2(
-        input_shape=(224, 224, 3),
-        include_top=False,
-        weights="imagenet"
-    )
-
-    base_model.trainable = False
-
-    model = tf.keras.Sequential([
-        tf.keras.layers.Rescaling(1./255),
-        base_model,
-        tf.keras.layers.GlobalAveragePooling2D(),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(128, activation="relu"),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(5, activation="softmax")
-    ])
-
-    model.load_weights("phase1_weights.weights.h5")
-
-    return model
+    if not os.path.exists(MODEL_PATH):
+        url = f"https://drive.google.com/uc?id={FILE_ID}"
+        gdown.download(url, MODEL_PATH, quiet=False)
+    return tf.keras.models.load_model(MODEL_PATH)
 
 
 model = load_model()
