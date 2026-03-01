@@ -56,14 +56,16 @@ This project aims to:
 - Google Drive (Model Hosting via gdown)
 
 ---
-
 ## 📂 Project Structure
+
+```
 Diabetic-Retinopathy-Detection/
 │
-├── app.py # Streamlit application
-├── requirements.txt # Python dependencies
-├── README.md # Project documentation
-└── runtime.txt # Python version configuration
+├── app.py              # Streamlit application
+├── requirements.txt    # Python dependencies
+├── runtime.txt         # Python version configuration
+└── README.md           # Project documentation
+```
 
 
 ---
